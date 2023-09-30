@@ -1,0 +1,23 @@
+version: '3'
+services:
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - 4317:4317
+      - 55678:55678
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9091:9090
+    volumes:
+      - ./:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
